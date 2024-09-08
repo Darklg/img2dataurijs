@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
         $result = document.querySelector('.result'),
         $result_preview = document.getElementById('result-preview'),
         $result_code = document.getElementById('result-code'),
+        $result_infos = document.getElementById('result-infos'),
         $result_base64 = document.getElementById('result-base64');
 
     $dropzone.addEventListener('drop', function(e) {
@@ -13,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!file.type.startsWith('image/')) {
             return;
         }
+
         var reader = new FileReader();
         reader.onload = function(event) {
             var base64 = event.target.result,
@@ -29,6 +31,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 /* Display preview */
                 $result_preview.style.backgroundImage = _backgroundImage;
                 $result_preview.style.backgroundSize = _backgroundSize;
+
+                /* Display infos */
+                $result_infos.innerHTML = "Size Before: " + file.size + " octets<br />" + "Size After: " + base64.length + " chars";
 
                 /* Display code */
                 var _code = ".element {\n";
@@ -61,15 +66,15 @@ document.addEventListener("DOMContentLoaded", function() {
         e.preventDefault();
     });
 
-    /* Select all */
-    document.addEventListener('click', function(e) {
-        if (e.target.tagName === 'PRE') {
+    /* Select all on the first click on a PRE */
+    Array.prototype.forEach.call(document.querySelectorAll('pre'), function(el) {
+        el.addEventListener('focus', function(e) {
             var range = document.createRange();
             range.selectNodeContents(e.target);
             var selection = window.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
-        }
+        });
     });
 
 });
